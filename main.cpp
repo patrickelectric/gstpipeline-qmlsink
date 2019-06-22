@@ -40,13 +40,33 @@ int main(int argc, char *argv[])
     "image/jpeg, width=1920, height=1080, framerate=30/1",
     "jpegparse",
     "jpegdec",
-    "videoconvert",
+    "videoconvert n-threads=16",
     "queue",
     "video/x-raw, format=RGBA, framerate=30/1",
     "queue",
     "glupload",
     "qmlglsink name=sink",
   };
+
+  QStringList pipeSink{
+    "qmlglsrc name=window do-timestamp=true",
+    //"gltestsrc name=window",
+    "queue",
+    //"video/x-raw",
+    //"video/x-raw,format=I420",
+    //"glimagesink name=sink async-handling=true blocksize=409600 enable-last-sample=true pixel-aspect-ratio=1/1 sync=false",
+    "gldownload ! video/x-raw,format=RGBA ! videoconvert ! queue ! fpsdisplaysink  sync=false async=false",
+    //"videotestsrc name=window"
+    //"video/x-raw(memory:GLMemory), format=RGBA, framerate=30/1, width=200, height=200",
+    //"videoconvert",
+    //"fpsdisplaysink name=sink",
+    //"x264enc bitrate=5000",
+    //"video/x-h264, profile=baseline",
+    //"filesink location=/tmp/gstreamer-gst-plugins-good/tests/examples/qt/qmlsrc/b/testt.mp4 name=sink"
+    //"glimagesink name=sink",
+  };
+  GstElement* pipelineSink = gst_parse_launch(pipeSink.join(" ! ").toStdString().c_str(), NULL);
+  GstElement* window = gst_bin_get_by_name(GST_BIN(pipelineSink), "window");
 
   GstElement* pipeline = gst_parse_launch(pipe.join(" ! ").toStdString().c_str(), NULL);
   //GstElement* pipeline = gst_parse_launch("udpsrc port=5600 close-socket=false multicast-iface=false auto-multicast=true ! application/x-rtp, payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! video/x-raw,format=RGBA ! glupload ! qmlglsink name=sink sync=false", NULL);
@@ -119,10 +139,13 @@ int main(int argc, char *argv[])
   /* find and set the videoItem on the sink */
   rootObject = static_cast<QQuickWindow*>(engine.rootObjects().first());
   videoItem = rootObject->findChild<QQuickItem*>("videoItem");
+  g_object_set(window, "window", rootObject, NULL);
+  g_object_set(window, "use-default-fbo", true, NULL);
   g_assert(videoItem);
   g_object_set(sink, "widget", videoItem, NULL);
 
   rootObject->scheduleRenderJob(new SetPlaying(pipeline), QQuickWindow::BeforeSynchronizingStage);
+  rootObject->scheduleRenderJob(new SetPlaying(pipelineSink), QQuickWindow::BeforeSynchronizingStage);
 
   int ret = app.exec();
 
