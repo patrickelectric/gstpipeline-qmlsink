@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
   QGuiApplication app(argc, argv);
 
-  GstElement* pipeline = gst_parse_launch("v4l2src device=/dev/video0 ! image/jpeg, width=1920, height=1080, framerate=30/1  ! jpegparse ! jpegdec ! videoconvert ! video/x-raw,format=RGBA ! queue ! glupload ! qmlglsink name=sink", NULL);
+  GstElement* pipeline = gst_parse_launch("v4l2src device=/dev/video0 ! image/jpeg, width=1920, height=1080, framerate=30/1  ! jpegparse ! jpegdec ! videoconvert ! video/x-raw,format=RGBA,sync=false! queue ! glupload ! qmlglsink name=sink", NULL);
   //GstElement* pipeline = gst_parse_launch("udpsrc port=5600 close-socket=false multicast-iface=false auto-multicast=true ! application/x-rtp, payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! video/x-raw,format=RGBA ! glupload ! qmlglsink name=sink sync=false", NULL);
   GstElement* sink = gst_bin_get_by_name(GST_BIN(pipeline), "sink");
 
