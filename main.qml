@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.12
 import QtQuick.Controls 1.1
 import QtQuick.Controls.Styles 1.3
 import QtQuick.Dialogs 1.2
@@ -14,6 +14,21 @@ ApplicationWindow {
     x: 30
     y: 30
     color: "black"
+
+
+    Rectangle {
+        id: rect
+        width: 30
+        height: window.height
+        z: 1000
+        XAnimator on x {
+            from: 0
+            to: window.width + rect.width;
+            duration: 200
+            running: true
+            loops: Animation.Infinite
+        }
+    }
 
     Item {
         anchors.fill: parent
