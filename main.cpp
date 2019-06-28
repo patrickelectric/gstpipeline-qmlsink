@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
   QGuiApplication app(argc, argv);
 
   QStringList pipe{
-
     "v4l2src device=/dev/video0 do-timestamp=true blocksize=40960" ,
     "image/jpeg, width=1920, height=1080, framerate=30/1",
     "jpegparse",
@@ -44,10 +43,7 @@ int main(int argc, char *argv[])
     "videoconvert n-threads=16",
     "queue",
     "video/x-raw, format=RGBA, framerate=30/1",
-    //"videotestsrc pattern=ball ",
     "queue",
-    //"glimagesink name=sink",
-    //"fpsdisplaysink name=sink sync=false async=false",
     "glupload",
     "qmlglsink name=sink sync=true",
   };
