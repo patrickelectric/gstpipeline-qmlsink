@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
   videoItem = rootObject->findChild<QQuickItem*>("videoItem");
   g_object_set(window, "window", rootObject, NULL);
   g_object_set(window, "use-default-fbo", true, NULL);
-  g_assert(videoItem);
+  //g_assert(videoItem);
   //g_object_set(windowSink, "rotate-method", 8, NULL);
   g_object_set(sink, "widget", videoItem, NULL);
 

@@ -31,20 +31,26 @@ void VideoElement::scheduleRenderJob(QQuickWindow* window)
     GstElement* gstSink = gst_bin_get_by_name(GST_BIN(gstPipeline), "sink");
     g_assert(gstPipeline && gstSink);
 
-    //g_object_set(gstSink, "widget", this, nullptr);
+    createVideoItem();
+    qDebug() << _controlPanel.get();
+    auto videoItem = _controlPanel.get()->findChild<QQuickItem*>("videoItem");
+    qDebug() << videoItem;
+    //if(videoItem) {
+        g_object_set(gstSink, "widget", _controlPanel.get(), nullptr);
+    //}
 
     window->scheduleRenderJob(new GstPipelinePlayer(gstPipeline), QQuickWindow::BeforeSynchronizingStage);
 }
 
 
-QQuickItem* VideoElement::video(QObject* parent)
+void VideoElement::createVideoItem()
 {
-    QQmlEngine* engine = qmlEngine(parent);
+    QQmlEngine* engine = qmlEngine(this);
     if(!engine) {
         qDebug() << "No qml engine to load visualization.";
-        return nullptr;
+        return;
     }
-    QQmlComponent component(engine, "qrc:/GstVideo.qml", parent);
+    QQmlComponent component(engine, "qrc:/GstVideo.qml", this);
     _controlPanel.reset(qobject_cast<QQuickItem*>(component.create()));
     if(_controlPanel.isNull()) {
         qDebug() << "Failed to load QML component.";
@@ -52,9 +58,10 @@ QQuickItem* VideoElement::video(QObject* parent)
         if(component.isError()) {
             qDebug() << "Error list:" << component.errors();
         }
-        return nullptr;
+        return;
     }
 
-    _controlPanel->setParentItem(qobject_cast<QQuickItem*>(parent));
-    return _controlPanel.get();
+    _controlPanel->setParentItem(qobject_cast<QQuickItem*>(this));
+    qvariant_cast<QObject*>(_controlPanel.get()->property("anchors"))->setProperty("fill", QVariant::fromValue<VideoElement*>(this));
+    qDebug() << qvariant_cast<QObject*>(_controlPanel.get()->property("anchors"))->property("fill");
 }

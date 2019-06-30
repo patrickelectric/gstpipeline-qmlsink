@@ -3,10 +3,9 @@ import QtQuick.Controls 1.1
 import QtQuick.Controls.Styles 1.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.1
+import QtQuick.Layouts 1.12
 
 import VideoElement 1.0
-
-import org.freedesktop.gstreamer.GLVideoItem 1.0
 
 ApplicationWindow {
     id: window
@@ -17,37 +16,23 @@ ApplicationWindow {
     y: 30
     color: "black"
 
-
-    Rectangle {
-        id: rect
-        width: 30
-        height: window.height
-        z: 1000
-        XAnimator on x {
-            from: 0
-            to: window.width + rect.width;
-            duration: 200
-            running: true
-            loops: Animation.Infinite
-        }
-    }
-
     Item {
         anchors.fill: parent
 
-        GstGLVideoItem {
-            id: video
-            objectName: "videoItem"
-            anchors.centerIn: parent
-            width: parent.width
-            height: parent.height
-        }
+        GridLayout {
+            id: lay
+            rows: 5
+            columns: rows
+            anchors.fill: parent
 
-        VideoElement {
-            width: 100
-            height: width
-            anchors.top: video.top
-            anchors.right: video.right
+            Repeater {
+                model: lay.rows*lay.columns
+                VideoElement {
+                    id: videoElement
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                }
+            }
         }
 
         Rectangle {

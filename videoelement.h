@@ -67,7 +67,7 @@ public:
     }
     Q_PROPERTY(QString pipeline READ pipeline WRITE setPipeline NOTIFY pipelineDescriptionChanged)
 
-    QQuickItem* video(QObject* parent);
+    void createVideoItem();
 
 signals:
     void pipelineDescriptionChanged();
