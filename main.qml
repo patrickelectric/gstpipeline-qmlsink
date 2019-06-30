@@ -4,6 +4,8 @@ import QtQuick.Controls.Styles 1.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.1
 
+import VideoElement 1.0
+
 import org.freedesktop.gstreamer.GLVideoItem 1.0
 
 ApplicationWindow {
@@ -39,6 +41,13 @@ ApplicationWindow {
             anchors.centerIn: parent
             width: parent.width
             height: parent.height
+        }
+
+        VideoElement {
+            width: 100
+            height: width
+            anchors.top: video.top
+            anchors.right: video.right
         }
 
         Rectangle {

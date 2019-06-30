@@ -5,6 +5,8 @@
 #include <QRunnable>
 #include <gst/gst.h>
 
+#include "videoelement.h"
+
 class SetPlaying : public QRunnable
 {
 public:
@@ -35,13 +37,15 @@ int main(int argc, char *argv[])
 
   QGuiApplication app(argc, argv);
 
+  qmlRegisterType<VideoElement>("VideoElement", 1, 0, "VideoElement");
+
   QStringList pipe{
     "v4l2src device=/dev/video0 do-timestamp=true blocksize=40960" ,
     "image/jpeg, width=1920, height=1080, framerate=30/1",
     "jpegparse",
     "jpegdec",
     "videoconvert n-threads=16",
-    "queue",
+    //"queue",
     "video/x-raw, format=RGBA, framerate=30/1",
     "queue",
     "glupload",
