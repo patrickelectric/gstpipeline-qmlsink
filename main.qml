@@ -21,7 +21,7 @@ ApplicationWindow {
 
         GridLayout {
             id: lay
-            rows: 5
+            rows: 1
             columns: rows
             anchors.fill: parent
 

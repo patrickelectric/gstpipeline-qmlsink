@@ -7,9 +7,6 @@ VideoElement::VideoElement()
 {
     _pipelineDescription =
         "videotestsrc pattern=ball !"
-        //"image/jpeg, width=1920, height=1080, framerate=30/1"
-        //"jpegparse"
-        //"jpegdec"
         "videoconvert n-threads=16 !"
         "video/x-raw, format=RGBA, framerate=30/1 !"
         "queue !"
@@ -32,12 +29,7 @@ void VideoElement::scheduleRenderJob(QQuickWindow* window)
     g_assert(gstPipeline && gstSink);
 
     createVideoItem();
-    qDebug() << _controlPanel.get();
-    auto videoItem = _controlPanel.get()->findChild<QQuickItem*>("videoItem");
-    qDebug() << videoItem;
-    //if(videoItem) {
-        g_object_set(gstSink, "widget", _controlPanel.get(), nullptr);
-    //}
+    g_object_set(gstSink, "widget", _controlPanel.get(), nullptr);
 
     window->scheduleRenderJob(new GstPipelinePlayer(gstPipeline), QQuickWindow::BeforeSynchronizingStage);
 }
@@ -50,6 +42,7 @@ void VideoElement::createVideoItem()
         qDebug() << "No qml engine to load visualization.";
         return;
     }
+
     QQmlComponent component(engine, "qrc:/GstVideo.qml", this);
     _controlPanel.reset(qobject_cast<QQuickItem*>(component.create()));
     if(_controlPanel.isNull()) {
@@ -63,5 +56,4 @@ void VideoElement::createVideoItem()
 
     _controlPanel->setParentItem(qobject_cast<QQuickItem*>(this));
     qvariant_cast<QObject*>(_controlPanel.get()->property("anchors"))->setProperty("fill", QVariant::fromValue<VideoElement*>(this));
-    qDebug() << qvariant_cast<QObject*>(_controlPanel.get()->property("anchors"))->property("fill");
 }

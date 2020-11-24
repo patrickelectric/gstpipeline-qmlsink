@@ -46,7 +46,6 @@ int main(int argc, char *argv[])
   };
   GstElement* pipelineSink = gst_parse_launch(pipeSink.join(" ! ").toStdString().c_str(), NULL);
   GstElement* window = gst_bin_get_by_name(GST_BIN(pipelineSink), "window");
-  GstElement* windowSink = gst_bin_get_by_name(GST_BIN(pipelineSink), "sink");
 
   GError* error = nullptr;
   if(!gst_init_check(&argc, &argv, &error)) {
