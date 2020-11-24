@@ -2,35 +2,10 @@
 
 #include <QObject>
 #include <QQuickItem>
-#include <QRunnable>
+//#include <QRunnable>
 
 #include <gst/gst.h>
 #include <gst/gstplugin.h>
-//#include <gstqtsink.h>
-
-class GstPipelinePlayer : public QRunnable
-{
-public:
-  GstPipelinePlayer(GstElement* pipeline) {
-    _pipeline = pipeline ? static_cast<GstElement*>(gst_object_ref(pipeline)) : nullptr;
-  }
-  ~GstPipelinePlayer() {
-    if(!_pipeline) {
-      return;
-    }
-    gst_object_unref(_pipeline);
-  }
-
-  void run() {
-    if(!_pipeline) {
-      return;
-    }
-    gst_element_set_state(_pipeline, GST_STATE_PLAYING);
-  }
-
-private:
-  GstElement* _pipeline;
-};
 
 /**
  * @brief VideoElement widget
@@ -48,38 +23,62 @@ public:
     VideoElement();
 
     /**
+     * @brief Get sink from pipeline and set it in our qml item
+     *
+     * @param pipeline
+     */
+    void setSink(GstElement* pipeline);
+
+    /**
      * @brief Return gstreamer pipeline as string
      *
      * @return QString
      */
-    QString pipeline() {return _pipelineDescription;}
+    QString description() {return m_pipelineDescription;}
 
     /**
      * @brief Set pipeline description
      *
      * @param pipelineDescription
      */
-    void setPipeline(QString pipelineDescription) {
-        if(_pipelineDescription != pipelineDescription) {
-            _pipelineDescription = pipelineDescription;
-            emit pipelineDescriptionChanged();
+    void setDescription(QString pipelineDescription) {
+        if(m_pipelineDescription != pipelineDescription) {
+            m_pipelineDescription = pipelineDescription;
+            Q_EMIT descriptionChanged();
         }
     }
-    Q_PROPERTY(QString pipeline READ pipeline WRITE setPipeline NOTIFY pipelineDescriptionChanged)
+    Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
 
-    void createVideoItem();
-
-signals:
-    void pipelineDescriptionChanged();
+Q_SIGNALS:
+    void descriptionChanged();
 
 private:
-    QString _pipelineDescription;
-
     /**
      * @brief Update render job scheduler
      *
      */
     void scheduleRenderJob(QQuickWindow* window);
 
-    QSharedPointer<QQuickItem> _controlPanel;
+    /**
+     * @brief Create a Video item
+     *
+     */
+    void createVideoItem();
+
+    /**
+     * @brief GstElement deleter
+     *
+     */
+    static void gstElementDeleter(GstElement* element);
+
+    /**
+     * @brief Set play state in GstElement
+     *
+     */
+    void gstElementPlayer();
+
+    static const QString m_pipelineSufix;
+    QString m_pipelineDescription;
+    QSharedPointer<QQuickItem> m_quickitem;
+    QSharedPointer<GstElement> m_gstPipeline;
 };

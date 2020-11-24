@@ -31,6 +31,7 @@ ApplicationWindow {
                     id: videoElement
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    description: "videotestsrc pattern=ball ! video/x-raw,width=640,height=480"
                 }
             }
         }
@@ -38,8 +39,8 @@ ApplicationWindow {
         Rectangle {
             id: circle
             color: "red"
-            anchors.bottom: video.bottom
-            anchors.right: video.right
+            anchors.bottom: window.bottom
+            anchors.right: window.right
             anchors.margins: 15
             width : 50
             height: width
