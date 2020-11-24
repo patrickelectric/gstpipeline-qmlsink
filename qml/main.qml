@@ -39,8 +39,8 @@ ApplicationWindow {
         Rectangle {
             id: circle
             color: "red"
-            anchors.bottom: window.bottom
-            anchors.right: window.right
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
             anchors.margins: 15
             width : 50
             height: width

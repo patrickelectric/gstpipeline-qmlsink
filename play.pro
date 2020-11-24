@@ -34,10 +34,10 @@ PKGCONFIG = \
 
 
 SOURCES += \
-    main.cpp \
-    videoelement.cpp
+    src/main.cpp \
+    src/videoelement.cpp
 
 HEADERS += \
-    videoelement.h
+    src/videoelement.h
 
 RESOURCES += resources.qrc

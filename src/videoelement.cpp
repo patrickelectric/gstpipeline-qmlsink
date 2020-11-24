@@ -72,7 +72,7 @@ void VideoElement::createVideoItem()
         qDebug() << "No qml engine to load visualization.";
         return;
     }
-    QQmlComponent component(engine, "qrc:/GstVideo.qml", this);
+    QQmlComponent component(engine, "qrc:/qml/GstVideo.qml", this);
     m_quickitem.reset(qobject_cast<QQuickItem*>(component.create()));
     if(m_quickitem.isNull()) {
         qDebug() << "Failed to load QML component.";
