@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
 #include <QQuickItem>
-#include <QRunnable>
+#include <QTimer>
 #include <gst/gst.h>
 
 #include "helper.h"
@@ -26,6 +26,16 @@ int main(int argc, char *argv[])
 
   QQmlApplicationEngine engine;
   engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+
+  QTimer::singleShot(2000, &app, [&]() {
+    QObject *rootObject = engine.rootObjects().constFirst();
+    VideoElement *videoElement =  static_cast<VideoElement*>(rootObject->findChild<QObject*>("videoElement"));
+    if (videoElement) {
+      videoElement->setDescription("videotestsrc pattern=snow ! video/x-raw,width=640,height=480");
+    } else {
+      qDebug() << "Failed to find videoElement";
+    }
+  });
 
   int ret = app.exec();
   return ret;

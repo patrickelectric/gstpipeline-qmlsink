@@ -16,44 +16,29 @@ ApplicationWindow {
     y: 30
     color: "black"
 
-    Item {
+    VideoElement {
+        id: videoElement
+        objectName: "videoElement"
         anchors.fill: parent
+    }
 
-        GridLayout {
-            id: lay
-            rows: 1
-            columns: rows
-            anchors.fill: parent
+    Rectangle {
+        id: circle
+        color: "red"
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.margins: 15
+        width : 30
+        height: width
+        radius: width
 
-            Repeater {
-                model: lay.rows*lay.columns
-                VideoElement {
-                    id: videoElement
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    description: "gst-launch-1.0 -vc udpsrc address=0.0.0.0 port=5600 close-socket=false auto-multicast=true ! application/x-rtp, payload=96 ! rtph264depay ! decodebin3"
-                }
-            }
-        }
-
-        Rectangle {
-            id: circle
-            color: "red"
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.margins: 15
-            width : 30
-            height: width
-            radius: width
-
-            Timer {
-                id: hidetimer
-                interval: 300
-                running: true
-                repeat: true
-                onTriggered: {
-                    circle.visible = !circle.visible
-                }
+        Timer {
+            id: hidetimer
+            interval: 300
+            running: true
+            repeat: true
+            onTriggered: {
+                circle.visible = !circle.visible
             }
         }
     }
